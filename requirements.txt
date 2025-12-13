@@ -4,4 +4,4 @@ torchvision==0.21.0
 Pillow>=9.0.0
 numpy<2.0.0
 datasets>=2.14.0
-pyarrow<15
+pyarrow>=15.0.0,<16.0.0
