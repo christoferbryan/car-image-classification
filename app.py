@@ -7,13 +7,13 @@ import numpy as np
 
 # Page configuration
 st.set_page_config(
-    page_title="Car Model Classifier",
+    page_title="Car Image Classifier",
     page_icon="🚗",
     layout="wide"
 )
 
 # Title and description
-st.title("🚗 Stanford Cars Classifier")
+st.title("🚗 Car Image Classifier")
 st.markdown("""
 Upload an image of a car, and the model will predict its make, model, and year!
 This model is trained on the Stanford Cars dataset with 196 different car classes.
@@ -29,7 +29,6 @@ device = get_device()
 # Load class names
 @st.cache_data
 def load_class_names():
-    """Load class names from the Stanford Cars dataset"""
     try:
         from datasets import load_dataset
         dataset = load_dataset("tanganke/stanford_cars")
@@ -44,7 +43,6 @@ class_names = load_class_names()
 
 # Define the model architecture
 def create_model(num_classes=196):
-    """Create the ResNet18 model with custom FC layers"""
     model = models.resnet18(pretrained=False)
     
     # Replace FC layer with the same architecture used in training
@@ -174,7 +172,7 @@ with col2:
                     image, model, transform, class_names, device, top_k=show_top_k
                 )
                 
-                # Display top prediction prominently
+                # Display top predictions
                 top_pred = predictions[0]
                 st.success(f"**Predicted Car:** {top_pred['class']}")
                 st.metric(
@@ -188,7 +186,7 @@ with col2:
                 for i, pred in enumerate(predictions):
                     confidence = pred['probability'] * 100
                     
-                    # Only show if above threshold
+                    # Only show if probability is above threshold
                     if confidence >= confidence_threshold:
                         # Create a colored bar based on confidence
                         col_a, col_b = st.columns([3, 1])
@@ -199,7 +197,6 @@ with col2:
                         with col_b:
                             st.write(f"{confidence:.2f}%")
                         
-                        # Progress bar
                         st.progress(pred['probability'])
                         
                         st.divider()
@@ -221,17 +218,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Example images section (optional)
-# with st.expander("💡 Tips for better predictions"):
-#     st.markdown("""
-#     - Use clear, well-lit images
-#     - Car should be the main subject
-#     - Front, side, or 3/4 angle views work best
-#     - Avoid heavily cropped or blurry images
-#     - Higher resolution images generally work better
-#     """)
-
-# Display model info in expander
 if model is not None:
     with st.expander("🔧 Model Architecture Details"):
         st.markdown(f"""
